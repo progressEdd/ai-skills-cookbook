@@ -2,3 +2,18 @@
 	path = 01-dev-onboarding
 	url = https://github.com/progressEdd/dev-onboarding.git
 	branch = master
+[submodule "00-supporting-files/harnesses/skills"]
+	path = 00-supporting-files/harnesses/skills
+	url = https://github.com/mattpocock/skills
+[submodule "00-supporting-files/harnesses/gsd-core"]
+	path = 00-supporting-files/harnesses/gsd-core
+	url = https://github.com/open-gsd/gsd-core
+[submodule "00-supporting-files/harnesses/gsd-pi"]
+	path = 00-supporting-files/harnesses/gsd-pi
+	url = https://github.com/open-gsd/gsd-pi
+[submodule "00-supporting-files/harnesses/openspec"]
+	path = 00-supporting-files/harnesses/openspec
+	url = https://github.com/Fission-AI/openspec
+[submodule "00-supporting-files/harnesses/microsoft-agentic-harness"]
+	path = 00-supporting-files/harnesses/microsoft-agentic-harness
+	url = https://github.com/MCKRUZ/microsoft-agentic-harness
