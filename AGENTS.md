@@ -12,3 +12,5 @@
    ```
 
 3. **Worktrees** — If a `02-worktrees` folder exists in the project root, create git worktrees by default when branching. Follow the conventions described in the `02-worktrees/README.md` for naming, structure, and usage.
+
+4. This repo keeps reusable agent assets in `.agents/` and syncs tool-specific adapters with `.agents/scripts/`.
