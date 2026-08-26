@@ -6,7 +6,7 @@
 - [ ] Run the common workflow: `status` → `add` → `commit` → `push` / `pull`
 - [ ] Create branches to isolate agent work
 - [ ] Read a diff and revert a change (file, commit, or branch) after a bad agent edit
-- [ ] Bring another branch's changes into yours with `git rebase` (and know when to prefer it over merge)
+- [ ] Bring in a teammate's branch with `git merge`, stack your work with `git rebase`, and resolve the conflicts both can raise
 - [ ] Describe what a worktree is and when parallel agent sessions want one
 
 Every exercise below sits right after the concept that teaches it — run each command as you read, and by the end of the lesson every box will be checked (and you'll be working inside your own `my-course` worktree). I recommend typing the commands manually, so you get familiar with the commands especially if this is your first time learning git. If you are already familiar, you can instruct your AI agent to create worktrees and branches instead.
@@ -56,16 +56,15 @@ The `<path>` can be a single folder or several at once — `cd 02-worktrees` mov
     - [ ] Run `git log --oneline` in this repo and skim the output — every line is a checkpoint someone can return to; that's the safety net agents make you want
 2. **Check out a branch**
     - `git branch` lists your local branches (`git branch -a` includes remote ones like `course` and `starter-skills`); `git checkout $branch` switches to one
-    - Rather than committing straight to `master`, branch off an existing branch to create your own working branch. Use `starter-skills` — a branch off `master` that adds the starter `.agents/skills/` kit (`master` itself stays clean of it):
+    - Rather than committing straight to `master`, branch off it — *your branch of `master`*:
         ```
-        git checkout -b $my-branch origin/starter-skills
+        git checkout -b $my-branch master
         ```
-    - (`origin/starter-skills` is your clone's copy of the remote branch — cloning doesn't create a local `starter-skills`, and branching off the `origin/` copy works the same)
     - For an example, see the [`progressedd` branch](https://github.com/progressEdd/ai-skills-cookbook/tree/progressedd) on GitHub — a working branch created off `master` just like this
-    - This branch is yours — you'll practice the workflow below on it, then stack your course work on top of it with a rebase later in this lesson
+    - This branch is yours — you'll practice the workflow below on it, and later in this lesson you'll merge a teammate's work into it and stack your course work on top
 
     **Your turn**
-    - [ ] Run `git branch -a` to list the branches, then create your own working branch: `git checkout -b $my-branch origin/starter-skills` (replace `$my-branch` with a name you'll recognize)
+    - [ ] Run `git branch -a` to list the branches, then create your own working branch off `master`: `git checkout -b $my-branch master` (replace `$my-branch` with a name you'll recognize)
 3. **Make modifications** — you, or an agent on your behalf
 
     **Your turn**
@@ -138,8 +137,9 @@ Run these commands from the repo root — if you're inside a subfolder, `cd` bac
 
 **Your turn, for real:** create the worktree you'll use for the rest of the course — your own branch off `course`, where you'll mark every lesson's checkboxes and commit your progress:
 ```
-git worktree add 02-worktrees/my-course -b my-course course
+git worktree add 02-worktrees/my-course -b my-course origin/course
 ```
+(Spell remote-only branches as `origin/$branch` — right after cloning, `course` exists only on the remote, and with a bare remote name git silently ignores `-b` and checks out a local `course` instead.)
 Then `cd` into it and open it in your editor — this is where you'll work from now on:
 ```
 cd 02-worktrees/my-course
@@ -155,40 +155,54 @@ Things to keep in mind:
 - Worktree directories aren't tracked in git — a shared worktrees folder usually keeps only a `README.md` describing its conventions
 - The same branch can't be checked out in two worktrees at once
 
-### Bringing in another branch's changes with rebase
-Your `my-course` branch started from `course` — it has the lessons, but not the rest of the repo. Your `$my-branch` — your branch off `master` via `starter-skills` — has `master`'s supporting files (the harnesses the later lessons study), the starter `.agents/skills/` kit, and the practice commits you made above. You want both worlds in one clean history.
+### Bringing in another branch's changes: merge, then rebase
+Your `my-course` worktree has the lessons, but not the rest of the repo. Meanwhile `$my-branch` — your branch of `master` — has the supporting files the later lessons study. One thing is missing everywhere: a teammate maintains the [`starter-skills` branch](https://github.com/progressEdd/ai-skills-cookbook/tree/starter-skills) — a small branch carrying just the starter `.agents/skills/` kit (you'll customize it in [06-customizing-skills.md](06-customizing-skills.md)).
 
-Git has two tools for combining branches:
-- `git merge $branch` — combines both histories and adds a merge commit. The right call on shared branches like `master`
+Git has two tools for combining branches, and you're about to use both:
+- `git merge $branch` — combines both histories and adds a merge commit. The right call when pulling in someone else's work
 - `git rebase $branch` — replays *your* commits on top of `$branch`'s tip, as if you'd started your work from there. Linear history, no merge commit — the right call for your own working branch
 
-From inside your `my-course` worktree, rebase onto your own branch:
+#### Merge the starter kit — and meet your first conflict
+Back in your main checkout (where `$my-branch` lives), merge your teammate's branch:
+```
+git merge origin/starter-skills
+```
+(`origin/starter-skills` is your clone's copy of the remote branch — cloning doesn't create a local `starter-skills`, and merging the `origin/` copy works the same.)
+
+Git pauses with `CONFLICT (content): Merge conflict in README.md`. Your teammate didn't just add the kit — they also reworded the README tagline, and git won't guess which version you want. That's a **conflict**, and here it's an easy call: their tagline is a change you *don't* want; the skills kit is the change you *do* want:
+1. Open `README.md` — between `<<<<<<<` and `=======` is your side; between `=======` and `>>>>>>>` is your teammate's
+2. Edit the file to exactly what it should be: your title and tagline, no markers
+3. `git add README.md`, then `git commit` to finish the merge
+
+The lesson to take away: a merge brings *everything* on the branch — the changes you want riding alongside the ones you don't. Resolving conflicts is you telling git which is which.
+
+#### Rebase your course work on top
+Now, from inside your `my-course` worktree:
 ```
 git rebase $my-branch
 ```
 (Branches are shared across worktrees — `my-course` can see `$my-branch` even though it's checked out in your main checkout — so no `cd`-ing back and forth.)
 
-Git takes every commit `my-course` has that `$my-branch` doesn't — the course content and your progress commits — and replays them on top of your branch's tip. Verify:
+Git takes every commit `my-course` has that `$my-branch` doesn't — the course content and your progress commits — and replays them on top of your branch's tip. It pauses again on `README.md`: this time the conflict is between your branch's README and the course README. Keep the course version (it's your lesson hub): edit the file so it reads as the course README — no markers — then `git add README.md` and `git rebase --continue`.
+
+Verify:
 ```
+head -2 README.md
 ls .agents/skills/
 git log --oneline -5
 ```
-The skill kit is there, and your commits sit at the top of a single straight line of history. You'll also notice `master`'s supporting-file folders arrived — if the `00-supporting-files/harnesses/` folders look empty, populate them once with `git submodule update --init`.
-
-**If both branches changed the same file** (say, `README.md`), the rebase pauses mid-way and `git status` shows the conflict:
-1. Open the file and edit it to the version you want (for a README conflict, keep the course version — it's your lesson hub)
-2. `git add $file`
-3. `git rebase --continue` — git moves on to the next commit
+The README is the course version, the skill kit is there, and your commits sit at the top of a single straight line of history. (You'll also notice `master`'s supporting-file folders arrived — if the `00-supporting-files/harnesses/` folders look empty, populate them once with `git submodule update --init`.)
 
 Changed your mind mid-rebase? `git rebase --abort` puts the branch back exactly where it was.
 
 One golden rule: **rebase only branches that are yours.** Replaying commits rewrites history, so never rebase a branch others build on (`master`, shared features) — that breaks everyone else's clones.
 
 **Your turn**
-- [ ] Inside `my-course`, run the rebase onto your `$my-branch`, then verify with `ls .agents/skills/` and a linear `git log --oneline` — your course work now sits on top of your own branch of `master`
+- [ ] Merge `origin/starter-skills` into `$my-branch` and resolve the conflict keeping your README — notice how the skills kit arrived riding alongside a change you didn't want
+- [ ] Rebase `my-course` onto `$my-branch`, resolve the README conflict keeping the course version, then verify with `head -2 README.md`, `ls .agents/skills/`, and a linear `git log --oneline`
 
 ## Checkpoint
-Every exercise above sits right next to the concept that taught it. If all boxes are checked, this lesson is complete: you ran the whole workflow (`status` → `add` → `commit` → `push` → `pull`), undid a bad change, practiced worktrees, rebased your course work onto your own branch of `master`, and you're now working inside `my-course` with the skill kit in place. From here on, mark each lesson's checkboxes and commit as you go.
+Every exercise above sits right next to the concept that taught it. If all boxes are checked, this lesson is complete: you ran the whole workflow (`status` → `add` → `commit` → `push` → `pull`), undid a bad change, practiced worktrees, merged a teammate's branch while dropping the parts you didn't want, rebased your course work onto your branch of `master`, and you're now working inside `my-course` with the skill kit in place. From here on, mark each lesson's checkboxes and commit as you go.
 
 ## Terminology
 - `clone`: download a repository

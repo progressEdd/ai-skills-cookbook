@@ -29,7 +29,7 @@ Full setup walkthrough with exercises: [00-start-here.md](00-start-here.md).
 ## Your progress
 After [01-git-crash-course.md](01-git-crash-course.md), do the rest of the course in your own worktree so you can mark checkboxes as you go:
 ```
-git worktree add 02-worktrees/my-course -b my-course course
+git worktree add 02-worktrees/my-course -b my-course origin/course
 ```
 Each lesson's exercises are checkboxes that sit right after the concept that teaches them — run each one as you read, and a finished lesson means every box is checked. Mark them and commit: your progress becomes a reviewable git history, and `course` stays clean for content updates.
 
