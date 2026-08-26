@@ -17,3 +17,6 @@
 [submodule "00-supporting-files/harnesses/microsoft-agentic-harness"]
 	path = 00-supporting-files/harnesses/microsoft-agentic-harness
 	url = https://github.com/MCKRUZ/microsoft-agentic-harness
+[submodule "00-dev-log"]
+	path = 00-dev-log
+	url = https://github.com/progressEdd/dev-log.git
