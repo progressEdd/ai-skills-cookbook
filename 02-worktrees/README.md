@@ -44,9 +44,13 @@ git worktree add 02-worktrees/00-experiments 00-experiments
 
 ## Available Worktrees
 
-- **00-experiments**: Sandbox environment with `sandbox.ipynb` for LLM exploration and testing
+- **master**: The `master` branch — the stable baseline (initial commit)
   ```bash
-  git worktree add 02-worktrees/experiments experiments
+  git worktree add 02-worktrees/master master
+  ```
+- **course**: The `course` branch — course content in development
+  ```bash
+  git worktree add 02-worktrees/course course
   ```
 
 ## Notes
