@@ -24,6 +24,8 @@ git worktree add 02-worktrees/new-feature -b new-feature
 git worktree add 02-worktrees/experiments-petri-dish -b experiments-petri-dish 00-experiments
 ```
 
+> **Pitfall:** when the source branch only exists on the remote (e.g. `course` right after cloning), spell it out as `origin/<branch>` — with a bare remote name, git silently ignores `-b` and checks out a local branch named after the remote one.
+
 ### List all worktrees
 ```bash
 git worktree list
@@ -52,7 +54,7 @@ git worktree add 02-worktrees/00-experiments 00-experiments
   ```bash
   git worktree add 02-worktrees/course course
   ```
-- **starter-skills**: The `starter-skills` branch — the starter `.agents/` skill kit for course students; `master` itself stays clean of it
+- **starter-skills**: The `starter-skills` branch — just the starter `.agents/` skill kit on top of `blank-branch`, plus a teammate-style README tweak that gives course students a realistic merge conflict to resolve
   ```bash
   git worktree add 02-worktrees/starter-skills starter-skills
   ```
