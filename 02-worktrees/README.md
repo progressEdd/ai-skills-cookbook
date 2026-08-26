@@ -52,6 +52,10 @@ git worktree add 02-worktrees/00-experiments 00-experiments
   ```bash
   git worktree add 02-worktrees/course course
   ```
+- **starter-skills**: The `starter-skills` branch — the starter `.agents/` skill kit for course students; `master` itself stays clean of it
+  ```bash
+  git worktree add 02-worktrees/starter-skills starter-skills
+  ```
 
 ## Notes
 
