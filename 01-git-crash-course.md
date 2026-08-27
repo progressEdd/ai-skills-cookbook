@@ -162,6 +162,20 @@ Git has two tools for combining branches, and you're about to use both:
 - `git merge $branch` — combines both histories and adds a merge commit. The right call when pulling in someone else's work
 - `git rebase $branch` — replays *your* commits on top of `$branch`'s tip, as if you'd started your work from there. Linear history, no merge commit — the right call for your own working branch
 
+The difference is easiest to see as a picture. Merge keeps the true story — two lines of work rejoining — and ties them together with one new commit that has two parents:
+```
+      A---B---C   your work
+     /         \
+D---E---F---G---M   merge commit: both histories, nothing rewritten
+```
+Rebase instead *re-creates* your commits as copies (`A'`, `B'`, `C'` — new commit IDs) on top of the target branch, leaving one straight line and orphaning your originals:
+```
+              A'--B'--C'   your work, replayed
+             /
+D---E---F---G           the branch you rebased onto
+```
+That "copies with new IDs" detail is the whole reason for the golden rule below: a rebase doesn't move your commits, it *replaces* them — fine for a branch only you have, chaos for one others have checked out. One practical consequence you'll notice today: a merge can conflict only once, but a rebase replays your commits one at a time and can pause on *each* (`Rebasing (1/2)... (2/2)` in the output — keep resolving, `git add`, and `git rebase --continue` until it finishes).
+
 #### Merge the starter kit — and meet your first conflict
 Back in your main checkout (where `$my-branch` lives), merge your teammate's branch:
 ```
