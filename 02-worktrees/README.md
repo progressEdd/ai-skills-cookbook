@@ -48,6 +48,10 @@ git worktree add 02-worktrees/00-experiments 00-experiments
   ```bash
   git worktree add 02-worktrees/master master
   ```
+- **blank-branch**: The `blank-branch` branch — the repo's initial commit (just `.gitignore`, `LICENSE`, `README.md`); a blank canvas for new branches
+  ```bash
+  git worktree add 02-worktrees/blank-branch blank-branch
+  ```
 - **course**: The `course` branch — course content in development
   ```bash
   git worktree add 02-worktrees/course course
