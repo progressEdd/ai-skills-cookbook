@@ -2,30 +2,26 @@
 > Git is your undo button when an agent goes sideways. Commit fearlessly, revert easily. 
 
 ## Learning objectives
-- [ ] Explain what version control is and why it matters more, not less, when an agent edits your code
+- [ ] Explain what version control is and why it matters when an agent edits your code
 - [ ] Run the common workflow: `status` → `add` → `commit` → `push` / `pull`
 - [ ] Create branches to isolate agent work
 - [ ] Read a diff and revert a change (file, commit, or branch) after a bad agent edit
 - [ ] Bring in a teammate's branch with `git merge`, stack your work with `git rebase`, and resolve the conflicts both can raise
 - [ ] Describe what a worktree is and when parallel agent sessions want one
 
-Every exercise below sits right after the concept that teaches it — run each command as you read, and by the end of the lesson every box will be checked (and you'll be working inside your own `my-course` worktree). I recommend typing the commands manually, so you get familiar with the commands especially if this is your first time learning git. If you are already familiar, you can instruct your AI agent to create worktrees and branches instead.
+Each concept has a exercise that allows you to follow along — run each command as you read, and you'll be working inside your own `course-$your-name` worktree — replace `$your-name` with your name, so if your name is Edd yours is `course-edd`. If this is your first time learning git, I recommend typing the commands into the terminal manually, as the act of typing will help you process and remember the content better. If you are already familiar, you can instruct your AI agent to create worktrees and branches instead.
 
 ## Concepts
 
 ### Why git matters more with agents
 Git is a version control system: it tracks every change to your files, keeps a full history, and lets you return to any earlier state. Sites like [GitHub](https://github.com/) and [GitLab](https://about.gitlab.com/) host git repositories and add collaboration on top.
 
-If you're new to agents, it's tempting to think the agent makes git *less* important — it writes the code, after all. The opposite is true:
-
-- **Agents edit fast.** What used to be ten minutes of typing is now ten seconds of changes. Commits become checkpoints between agent runs.
-- **You review, the agent authors.** Reading a `git diff` before committing is how you catch a confident-sounding agent's mistakes.
-- **Mistakes are cheap to undo.** A bad agent edit is a `git restore`, not a lost afternoon. That safety is what lets you say "try it" without fear.
+As you co-develop with your agent, you need a tool that tracks your changes. If you aren't tracking your changes, you won't be able to revert to a past working state if you or your agent break a feature. Currently, git is the best way to track changes and is used by many open source projects such as the linux kernel and this training.
 
 ### The common workflow
 Before running any of this, [install git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git).
 
-And before running *any* terminal command, know where you are. Every terminal has a **current working directory (cwd)** — the folder commands operate on. It's also what an agent sees when you launch it, so it's the first thing to check when something "runs in the wrong place."
+And before running *any* terminal command, know where you are. Every terminal has a **current working directory (cwd)** — the folder commands operate on. It's also what an agent sees when you launch it, so it's the first thing to check when something goes wrong
 
 | Action | macOS / Linux | Windows (cmd / PowerShell) |
 |---|---|---|
@@ -36,7 +32,7 @@ And before running *any* terminal command, know where you are. Every terminal ha
 
 (Yes, bare `cd` in cmd on windows really does print the current directory — run `cd /?` to see it documented.)
 
-`cd` is the same everywhere; only the "where am I" and "home" spellings differ. Home-folder shorthand like `~/Documents` is understood by macOS/Linux shells and PowerShell, but not cmd — spell out `C:\Users\<you>\Documents` there (or use forward slashes, which git accepts).
+`cd` is the same everywhere; only the "where am I" and "home" spellings differ. Home-folder shorthand like `~/Documents` is understood by macOS/Linux shells and PowerShell, but not cmd which prefers `C:\Users\<you>\Documents` and use forward slashes, which git accepts.
 
 The `<path>` can be a single folder or several at once — `cd 02-worktrees` moves one level, while `cd 02-worktrees/progressedd` jumps multiple levels in one go (each segment relative to where you are now). You can also use an absolute path that starts from the root of the drive/filesystem, like `cd C:\Users\<you>\projects` or `cd /home/<you>/projects` — those work no matter where you currently are.
 
@@ -53,26 +49,26 @@ The `<path>` can be a single folder or several at once — `cd 02-worktrees` mov
 
     **Your turn**
     - [ ] If you haven't cloned yet: `cd` into the folder where you want the repo to live (e.g. `Documents`), run the command above, then `cd ai-skills-cookbook` into it — if you already cloned by following the root README, check the box and move on
-    - [ ] Run `git log --oneline` in this repo and skim the output — every line is a checkpoint someone can return to; that's the safety net agents make you want
+    - [ ] Run `git log --oneline` in this repo and skim the output — every line is a checkpoint someone can return to; that's how you keep track of the changes
 2. **Check out a branch**
-    - `git branch` lists your local branches (`git branch -a` includes remote ones like `course` and `starter-skills`); `git checkout $branch` switches to one
-    - Rather than committing straight to `master`, branch off it — *your branch of `master`*:
+    - `git branch` lists your local branches (`git branch -a` includes remote ones like `course` and `starter-skills`); `git checkout $branch` switches to the `$branch`, which can include `course`, `master`, or `starter-skills`
+    - Rather than committing straight to `master`, branch off it — *your branch of `master`*, replace `$my-branch` with your desired name:
         ```
         git checkout -b $my-branch master
         ```
-    - For an example, see the [`progressedd` branch](https://github.com/progressEdd/ai-skills-cookbook/tree/progressedd) on GitHub — a working branch created off `master` just like this
-    - This branch is yours — you'll practice the workflow below on it, and later in this lesson you'll merge a teammate's work into it and stack your course work on top
+    - For an example, see the [`progressedd` branch](https://github.com/progressEdd/ai-skills-cookbook/tree/progressedd) on GitHub — is Edd's working branch created off `master`
+    - This branch is yours — you'll practice the workflow below on it, and later in this lesson you'll merge a teammate's work into it and stack your course work in the worktrees
 
     **Your turn**
     - [ ] Run `git branch -a` to list the branches, then create your own working branch off `master`: `git checkout -b $my-branch master` (replace `$my-branch` with a name you'll recognize)
 3. **Make modifications** — you, or an agent on your behalf
 
     **Your turn**
-    - [ ] Make a small change on your branch (fix a typo, add a note) and run `git status` — your file should show up as modified
+    - [ ] Make a small change on your branch off of the master (fix a typo, update the [repo's root README.md](../../README.md), or a note) and run `git status` — your file should show up as modified. Files under [`02-worktrees`](../../02-worktrees/) are gitignored in this main checkout, so `git status` won't see them at all — a worktree has its own tracked checkout, so commits inside it work fine (details in the worktrees section)
 4. **Commit changes.** Commit whenever you've made progress or before you test something risky; if it breaks, you'll know which change caused it.
     1. `git status` — see which files have been modified
-    2. `git add $file-name` — stage a specific file, or `git add -A` for all changes
-        - **Git and paths:** git works from any folder inside the repo (it finds the root by walking up to `.git`), but `git add` interprets `$file-name` relative to *where you are*, not the repo root. From `02-worktrees/my-course/01-lessons/`, `git add 01-lessons/foo.md` fails — it's `git add foo.md` (or `git add :/01-lessons/foo.md` to spell it from the root). `git status` shows paths relative to your location too (`../` = up a level)
+    2. `git add $file-name` — stage a specific file, replace `$file-name` with a file from the repo, for example [repo's root README.md](../../README.md), or `git add -A` for all changes
+        - **Git and paths:** git works from any folder inside the repo (it finds the root by walking up to `.git`), but `git add` interprets `$file-name` relative to *where you are*, not the repo root. From `02-worktrees/course-$your-name/01-lessons/`, `git add 01-lessons/foo.md` fails — it's `git add foo.md` (or `git add :/01-lessons/foo.md` to spell it from the root). `git status` shows paths relative to your location too (`../` = up a level)
         - `git add -A` is the exception: it stages the entire repo no matter where you are
         - Simplest habit while learning: run git commands from the repo root, so "where I am" and "the repo root" are the same thing
         - Run `git help add` (quit with `q`) for examples of staging subsets of files
@@ -83,18 +79,18 @@ The `<path>` can be a single folder or several at once — `cd 02-worktrees` mov
     - [ ] Stage the file with `git add $file-name`, confirm with `git status` that it's staged, then commit with a message your future self will understand
 5. **Push local changes to the remote**
     ```
-    git push origin $branch-name
+    git push origin $my-branch
     ```
     - `origin` is shorthand for the remote repo you cloned from; note that many repos restrict pushing directly to `master`/`main`
 
     **Your turn**
-    - [ ] Push your branch with `git push origin $my-branch`, then find it on GitHub — your commits now live on the remote too
+    - [ ] Push your branch with `git push origin $my-branch`, replace `$my-branch` with the branch you initialized in the previous steps then find it on GitHub — your commits now live on the remote too
 6. **Open a pull request** — after pushing, GitHub/GitLab will prompt you with a link (or use the *Pull requests* tab → *Compare & pull request*). Some organizations require a review before merge
 
     **Your turn**
     - [ ] Open the pull-request link GitHub shows for your branch and read the diff it presents — you don't have to merge anything, just see how a review reads
 7. **Merge changes from the remote**
-    - `git status` first — commit or stash any local changes (`git stash` caches them; `git stash apply` brings them back)
+    - `git status` first — commit or stash any uncommitted changes (`git stash` shelves everything not yet committed; `git stash apply` brings them back)
     - `git pull` fetches and merges remote changes into your current branch (`git fetch` only downloads them, if you'd rather `merge` manually)
 
     **Your turn**
@@ -103,16 +99,16 @@ The `<path>` can be a single folder or several at once — `cd 02-worktrees` mov
 ### Undoing things
 The undo toolbox, ordered safest first:
 
-- `git restore $file` — discard uncommitted changes to a file; the file returns to its last committed state
-- `git restore --staged $file` — unstage a file (keeps the edits, pulls it out of the next commit)
-- `git revert $commit` — create a *new* commit that undoes an old one; safe on shared branches because history is preserved
+- `git restore $file-name` — discard uncommitted changes to a file; the file returns to its last committed state
+- `git restore --staged $file-name` — unstage a file (keeps the edits, pulls it out of the next commit). This is great when you accidentally run `git add -A`
+- `git revert $commit` — create a *new* commit that undoes an old one; safe on shared branches because history is preserved. `$commit` is the hash `git log --oneline` shows, e.g. `a1b2c3d`
 - `git reset` — move the branch pointer back; `--soft` keeps changes staged, `--hard` throws them away. Powerful and destructive — read twice, run once
 
-Rule of thumb for agent work: commit *before* letting the agent try something ambitious. Then a bad outcome is one `git restore` or `git reset --hard` away from gone.
+Rule of thumb for agent work: commit (manually or instruct the agent to commit) *before* letting the agent try something ambitious. Then a bad outcome is one `git restore` or `git reset --hard` away from gone.
 
 **Your turn**
-- [ ] Deliberately break a file (delete a line, paste in junk), inspect the damage with `git diff`, then discard it with `git restore $file`
-- [ ] Stage a change with `git add`, then pull it back out with `git restore --staged $file` — the edits stay, only the staging goes
+- [ ] Deliberately break a file (delete a line, paste in junk), inspect the damage with `git diff`, then discard it with `git restore $file-name`
+- [ ] Stage a change with `git add`, then pull it back out with `git restore --staged $file-name` — the edits stay, only the staging goes
 
 ### Working with worktrees
 When you need multiple branches checked out at the same time, `git worktree` gives each one its own working directory, all sharing the same repository history. Instead of stashing changes and switching branches, you can keep a feature branch open in one editor while hotfixing `main` in another — or run two agent sessions in parallel without them stepping on each other. (This course itself lives in a worktree.)
@@ -128,6 +124,7 @@ Run these commands from the repo root — if you're inside a subfolder, `cd` bac
         ```
         git worktree add $worktree-dir/$new-branch -b $new-branch [$source-branch]
         ```
+    - Reading the placeholders: `$worktree-dir` is the dedicated folder — in this repo, `02-worktrees`; `$branch-name` / `$new-branch` is the branch to check out or create; `[$source-branch]` is the branch the new one starts from (default: your current branch). Square brackets mean *optional argument* — don't type them
 2. **List worktrees:** `git worktree list` shows every working directory attached to the repo
 3. **Work inside it** — open the worktree folder in your editor; commits, pushes, and pulls all work the same
 4. **Clean up:** `git worktree remove $worktree-dir/$branch-name` once the work is committed and merged
@@ -135,17 +132,17 @@ Run these commands from the repo root — if you're inside a subfolder, `cd` bac
     **Your turn**
     - [ ] Practice the full cycle with a throwaway worktree: create one (`git worktree add 02-worktrees/practice -b practice`), make a commit inside it, confirm it shows up in `git worktree list`, then remove it with `git worktree remove 02-worktrees/practice` (add `--force` if you left uncommitted changes behind)
 
-**Your turn, for real:** create the worktree you'll use for the rest of the course — your own branch off `course`, where you'll mark every lesson's checkboxes and commit your progress:
+**Your turn, for real:** create the worktree you'll use for the rest of the course — your own branch off `course`, where you'll mark every lesson's checkboxes and commit your progress. Name it after yourself: replace `$your-name` with your name, so if your name is Edd the branch and folder are `course-edd`:
 ```
-git worktree add 02-worktrees/my-course -b my-course origin/course
+git worktree add 02-worktrees/course-$your-name -b course-$your-name origin/course
 ```
 (Spell remote-only branches as `origin/$branch` — right after cloning, `course` exists only on the remote, and with a bare remote name git silently ignores `-b` and checks out a local `course` instead.)
 Then `cd` into it and open it in your editor — this is where you'll work from now on:
 ```
-cd 02-worktrees/my-course
+cd 02-worktrees/course-$your-name
 ```
 
-- [ ] Create your `my-course` worktree and open `02-worktrees/my-course/` in your editor — the rest of the course happens inside it
+- [ ] Create your `course-$your-name` worktree and open `02-worktrees/course-$your-name/` in your editor — the rest of the course happens inside it
 - [ ] Inside the worktree, commit the screenshot you saved in [00-start-here.md](00-start-here.md): `git add` the image, then `git commit` — your first progress commit
 
 Each marked checkbox becomes a commit — your progress doubles as git practice — and `course` stays clean so it can receive future content updates.
@@ -156,11 +153,11 @@ Things to keep in mind:
 - The same branch can't be checked out in two worktrees at once
 
 ### Bringing in another branch's changes: merge, then rebase
-Your `my-course` worktree has the lessons, but not the rest of the repo. Meanwhile `$my-branch` — your branch of `master` — has the supporting files the later lessons study. One thing is missing everywhere: a teammate maintains the [`starter-skills` branch](https://github.com/progressEdd/ai-skills-cookbook/tree/starter-skills) — a small branch carrying just the starter `.agents/skills/` kit (you'll customize it in [06-customizing-skills.md](06-customizing-skills.md)).
+Your `course-$your-name` worktree has the lessons, but not the rest of the repo. Meanwhile `$my-branch` — your branch of `master` — has the supporting files the later lessons study. One thing is missing everywhere: a teammate maintains the [`starter-skills` branch](https://github.com/progressEdd/ai-skills-cookbook/tree/starter-skills) — a small branch carrying just the starter `.agents/skills/` kit (you'll customize it in [06-customizing-skills.md](06-customizing-skills.md)).
 
 Git has two tools for combining branches, and you're about to use both:
-- `git merge $branch` — combines both histories and adds a merge commit. The right call when pulling in someone else's work
-- `git rebase $branch` — replays *your* commits on top of `$branch`'s tip, as if you'd started your work from there. Linear history, no merge commit — the right call for your own working branch
+- `git merge $branch` — combines both histories and adds a merge commit, where `$branch` is the branch whose changes you want (for example `origin/starter-skills`). The right call when pulling in someone else's work
+- `git rebase $branch` — replays *your* commits on top of `$branch`'s tip, as if you'd started your work from there, where `$branch` is the branch you're rebasing *onto* (for example `$my-branch`). Linear history, no merge commit — the right call for your own working branch
 
 The difference is easiest to see as a picture. Merge keeps the true story — two lines of work rejoining — and ties them together with one new commit that has two parents:
 ```
@@ -181,7 +178,7 @@ Back in your main checkout (where `$my-branch` lives), merge your teammate's bra
 ```
 git merge origin/starter-skills
 ```
-(`origin/starter-skills` is your clone's copy of the remote branch — cloning doesn't create a local `starter-skills`, and merging the `origin/` copy works the same.)
+(`origin/starter-skills` is your clone's copy of the remote branch. Why spell it that way? Unlike `git checkout`, `git merge` doesn't fall back to a matching remote branch: plain `git merge starter-skills` works only if a local `starter-skills` exists, and a plain clone doesn't create one — `origin/starter-skills` works for everyone. If you ran `git setup-worktrees` during setup, you *do* have a local `starter-skills`, checked out in `02-worktrees/starter-skills`, so plain `git merge starter-skills` works there too, same result. Merging a branch that's checked out in another worktree is fine: git only stops you from *checking out* the same branch twice.)
 
 Git pauses with `CONFLICT (content): Merge conflict in README.md`. Your teammate didn't just add the kit — they also reworded the README tagline, and git won't guess which version you want. That's a **conflict**, and here it's an easy call: their tagline is a change you *don't* want; the skills kit is the change you *do* want:
 1. Open `README.md` — between `<<<<<<<` and `=======` is your side; between `=======` and `>>>>>>>` is your teammate's
@@ -191,13 +188,13 @@ Git pauses with `CONFLICT (content): Merge conflict in README.md`. Your teammate
 The lesson to take away: a merge brings *everything* on the branch — the changes you want riding alongside the ones you don't. Resolving conflicts is you telling git which is which.
 
 #### Rebase your course work on top
-Now, from inside your `my-course` worktree:
+Now, from inside your `course-$your-name` worktree (`cd 02-worktrees/course-$your-name`) run:
 ```
 git rebase $my-branch
 ```
-(Branches are shared across worktrees — `my-course` can see `$my-branch` even though it's checked out in your main checkout — so no `cd`-ing back and forth.)
+(Branches are shared across worktrees — `course-$your-name` can see `$my-branch` even though it's checked out in your main checkout — so no `cd`-ing back and forth.)
 
-Git takes every commit `my-course` has that `$my-branch` doesn't — the course content and your progress commits — and replays them on top of your branch's tip. It pauses again on `README.md`: this time the conflict is between your branch's README and the course README. Keep the course version (it's your lesson hub): edit the file so it reads as the course README — no markers — then `git add README.md` and `git rebase --continue`.
+Git takes every commit `course-$your-name` has that `$my-branch` doesn't — the course content and your progress commits — and replays them on top of your branch's tip. It pauses again on `README.md`: this time the conflict is between your branch's README and the course README. Keep the course version (it's your lesson hub): edit the file so it reads as the course README — no markers — then `git add README.md` and `git rebase --continue`.
 
 Verify:
 ```
@@ -213,10 +210,10 @@ One golden rule: **rebase only branches that are yours.** Replaying commits rewr
 
 **Your turn**
 - [ ] Merge `origin/starter-skills` into `$my-branch` and resolve the conflict keeping your README — notice how the skills kit arrived riding alongside a change you didn't want
-- [ ] Rebase `my-course` onto `$my-branch`, resolve the README conflict keeping the course version, then verify with `head -2 README.md`, `ls .agents/skills/`, and a linear `git log --oneline`
+- [ ] Rebase `course-$your-name` onto `$my-branch`, resolve the README conflict keeping the course version, then verify with `head -2 README.md`, `ls .agents/skills/`, and a linear `git log --oneline`
 
 ## Checkpoint
-Every exercise above sits right next to the concept that taught it. If all boxes are checked, this lesson is complete: you ran the whole workflow (`status` → `add` → `commit` → `push` → `pull`), undid a bad change, practiced worktrees, merged a teammate's branch while dropping the parts you didn't want, rebased your course work onto your branch of `master`, and you're now working inside `my-course` with the skill kit in place. From here on, mark each lesson's checkboxes and commit as you go.
+Every exercise above sits right next to the concept that taught it. If all boxes are checked, this lesson is complete: you ran the whole workflow (`status` → `add` → `commit` → `push` → `pull`), undid a bad change, practiced worktrees, merged a teammate's branch while dropping the parts you didn't want, rebased your course work onto your branch of `master`, and you're now working inside `course-$your-name` with the skill kit in place. From here on, mark each lesson's checkboxes and commit as you go.
 
 ## Terminology
 - `clone`: download a repository

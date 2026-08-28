@@ -9,7 +9,7 @@
 
 Every exercise sits right after the concept that teaches it — run each one as you read, and by the end of this lesson every box will be checked.
 
-Do your skill work inside your `my-course` worktree — you brought `.agents/skills/` into it with the merge and rebase in [the git crash course](01-git-crash-course.md). Skills are read per checkout, so an agent launched there sees your skills while the main checkout stays untouched.
+Do your skill work inside your `course-$your-name` worktree — you brought `.agents/skills/` into it with the merge and rebase in [the git crash course](01-git-crash-course.md). Skills are read per checkout, so an agent launched there sees your skills while the main checkout stays untouched.
 
 ## Concepts
 
