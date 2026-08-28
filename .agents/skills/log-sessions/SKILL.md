@@ -21,7 +21,7 @@ Run the script from this skill's directory (paths in this document are relative 
 
 ## What the script matches
 
-- **Harnesses**: `pi` (`~/.pi/agent/sessions/`), `claude` (`~/.claude/projects/`), `codex` (`~/.codex/sessions/`) are parsed fully (user/assistant messages, git commands, file writes/edits). `cursor` reads chat metadata from `state.vscdb` (sqlite3, best-effort). `gemini` is detection-only. Use `--harnesses pi,claude` to narrow.
+- **Harnesses**: `pi` (`~/.pi/agent/sessions/`), `claude` (`~/.claude/projects/`), `codex` (`~/.codex/sessions/`) are parsed fully (user/assistant messages, git commands, file writes/edits). `cursor` best-effort parses all three of its storage layers — agent transcripts (`~/.cursor/projects/*/agent-transcripts/`), per-chat SQLite (`~/.cursor/chats/*/*/store.db`), and `composerData`/`bubbleId` rows in `state.vscdb` — since Cursor splits sessions across a storage stack rather than one transcript dir (see vibe-replay's Cursor local-storage deep dive). `gemini` is detection-only. Use `--harnesses pi,claude` to narrow.
 - **Repository scope**: a session belongs to this repo when its recorded `cwd` is the repo root **or anywhere under it** — so sessions run inside worktrees and subfolders are included and labeled.
 - **Day assignment**: events are grouped by local-timezone day, so a session that crosses midnight appears on both days. Ask the user before guessing which day they mean.
 - **Noise filtering**: harness bookkeeping (`<command-name>`, caveats, environment context, tool results) is already stripped.
@@ -69,6 +69,6 @@ With no date flags the script prints today's digest, falling back to the most re
 ## Notes and limits
 
 - Read-only: the script never writes to session stores or the repo.
-- Cursor parses chat metadata only (names/timestamps); message bodies live in a binary format — say so in the note rather than inventing content, and ask the user what happened in those chats.
+- Cursor's formats are undocumented and layered (transcripts, `store.db`, `cursorDiskKV`); the script dedupes sessions by id across layers but attributes a session to this repo only when the repo path appears in it (project dir name, transcript content, store blobs, or composer bubbles). A Cursor session that never mentions the repo path can't be attributed — say so rather than inventing content. Prompt history (`~/.cursor/prompt_history.json`) and the AI-attribution DB (`~/.cursor/ai-tracking/`) are out of scope.
 - To support another harness, add a `parse_<name>_file`/`scan_<name>` function and register it in `SCANNERS` in `scripts/log_sessions.py`. JSONL stores with a recorded `cwd` are ~30 lines of code.
 - If the user's sessions live somewhere unusual, the harness roots are all defined at the top of `SCANNERS` in the script.

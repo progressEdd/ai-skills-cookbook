@@ -6,7 +6,8 @@ Harnesses:
   pi      ~/.pi/agent/sessions/<sanitized-cwd>/*.jsonl   (full parse)
   claude  ~/.claude/projects/**/*.jsonl                  (full parse — Claude Code)
   codex   ~/.codex/sessions/**/*.jsonl                   (full parse — OpenAI Codex CLI)
-  cursor  Cursor workspaceStorage/state.vscdb            (best-effort: chat metadata via sqlite3)
+  cursor  ~/.cursor/projects/*/agent-transcripts/*.jsonl, ~/.cursor/chats/*/*/store.db,
+          globalStorage state.vscdb (composerData/bubbleId)  (best-effort — formats undocumented)
   gemini  ~/.gemini/tmp/*                                (detection only)
 
 A session belongs to the repository when its recorded cwd is the repo root or
@@ -69,6 +70,23 @@ def _epoch_ms_to_local(ms):
         return datetime.fromtimestamp(int(ms) / 1000).astimezone()
     except (ValueError, OverflowError, OSError):
         return None
+
+
+def _any_ts_to_local(v):
+    """Tolerant timestamp parse: ISO string, epoch seconds, or epoch millis."""
+    if v is None:
+        return None
+    if isinstance(v, (int, float)):
+        return _epoch_ms_to_local(v) if v > 1e12 else _epoch_ms_to_local(v * 1000)
+    if isinstance(v, str):
+        iso = _iso_to_local(v)
+        if iso:
+            return iso
+        try:
+            return _any_ts_to_local(float(v))
+        except ValueError:
+            return None
+    return None
 
 
 def _squash(text: str) -> str:
@@ -204,8 +222,11 @@ def _bash_git(cmd: str):
         return None
     for part in re.split(r"&&|\|\||;|\n", cmd):
         part = part.strip()
-        if part.startswith("git") and GIT_RE.search(part):
-            return part
+        if part.startswith("git"):
+            # tolerate `git -C <path>` prefixes (e.g. Cursor tool calls)
+            probe = re.sub(r"^git\s+(?:-C\s+\S+\s+)+", "git ", part)
+            if GIT_RE.search(probe):
+                return part
     return None
 
 
@@ -403,67 +424,311 @@ def parse_codex_file(path: Path, repo: Path):
 
 
 # ---------------------------------------------------------------- harness: cursor (best-effort)
+#
+# Cursor has no single session log. Sessions live in a storage stack
+# (https://vibe-replay.com/blog/cursor-local-storage/):
+#   1. ~/.cursor/projects/<sanitized-cwd>/agent-transcripts/<sid>.jsonl  — richest text
+#   2. ~/.cursor/chats/*/<sid>/store.db                                  — per-session SQLite (meta + blobs)
+#   3. globalStorage state.vscdb, table cursorDiskKV:
+#        composerData:<sid>   — name/createdAt + fullConversationHeadersOnly (ordered
+#                               bubble list; type 1 = user, 2 = assistant)
+#        bubbleId:<sid>:<bid> — text / toolFormerData per bubble
+# All formats are undocumented, so every layer is parsed tolerantly and may
+# fail independently. Only stdlib sqlite3/json are used.
 
-def _cursor_workspace_roots():
-    candidates = [
-        HOME / ".config" / "Cursor" / "User" / "workspaceStorage",
-        HOME / "Library" / "Application Support" / "Cursor" / "User" / "workspaceStorage",
-    ]
-    return [c for c in candidates if c.is_dir()]
+CURSOR_GLOBAL_DBS = [
+    HOME / ".config" / "Cursor" / "User" / "globalStorage" / "state.vscdb",
+    HOME / "Library" / "Application Support" / "Cursor" / "User" / "globalStorage" / "state.vscdb",
+]
+CURSOR_WS_ROOTS = [
+    HOME / ".config" / "Cursor" / "User" / "workspaceStorage",
+    HOME / "Library" / "Application Support" / "Cursor" / "User" / "workspaceStorage",
+]
+
+_MAX_ROWS = 5000        # bounded scans so huge stores can't stall the run
+_MAX_CELL = 200_000     # inspect at most this many chars of any one cell
+
+
+def _sqlite_ro(path: Path):
+    import sqlite3  # stdlib, imported lazily
+    return sqlite3.connect(f"file:{path}?mode=ro", uri=True)
+
+
+def _json_maybe(v):
+    """Return (parsed, raw_string) when a cell looks like JSON, else (None, raw-ish)."""
+    if isinstance(v, (bytes, bytearray)):
+        v = v.decode("utf-8", "replace")
+    if isinstance(v, str):
+        s = v.strip()
+        if s[:1] in ("{", "["):
+            try:
+                return json.loads(s), s
+            except ValueError:
+                pass
+        return None, s
+    return None, json.dumps(v) if isinstance(v, (dict, list)) else str(v)
+
+
+def _cursor_role(obj, hint=None):
+    for v in (hint, obj.get("role"), obj.get("type"), obj.get("speaker")):
+        if v in (1, "1", "user", "human", "HUMAN"):
+            return "user"
+        if v in (2, "2", "assistant", "ai", "AI", "agent"):
+            return "assistant"
+    if obj.get("fromAgent") in (True, "true", 1):
+        return "assistant"
+    return None
+
+
+def _cursor_text(v):
+    if isinstance(v, str):
+        return v
+    if isinstance(v, list):
+        parts = []
+        for item in v:
+            if isinstance(item, str):
+                parts.append(item)
+            elif isinstance(item, dict) and isinstance(item.get("text"), str):
+                parts.append(item["text"])
+        return "\n".join(parts) if parts else None
+    if isinstance(v, dict):
+        blocks = v.get("blocks")
+        if isinstance(blocks, list):
+            return _cursor_text(blocks)
+    return None
+
+
+def _cursor_tool_event(sess, ts, tfd):
+    """Turn a Cursor toolFormerData payload into git/file events."""
+    if not isinstance(tfd, dict):
+        return
+    name = str(tfd.get("name") or "")
+    params, _raw = _json_maybe(tfd.get("params"))
+    if not isinstance(params, dict):
+        params = {}
+    for k in ("command", "cmd", "script"):
+        cmd = params.get(k)
+        if isinstance(cmd, str):
+            git = _bash_git(cmd)
+            if git:
+                sess.add_git(ts, git)
+                return
+    if any(w in name for w in ("write", "edit", "create", "rename", "delete", "apply")):
+        fp = params.get("path") or params.get("file_path") or params.get("target_file") or params.get("edit")
+        if isinstance(fp, dict):
+            fp = fp.get("target_file") or fp.get("path") or ""
+        if isinstance(fp, str) and fp:
+            sess.add_file(ts, name, fp)
+
+
+def _add_cursor_blob(sess, obj, role_hint=None, ts_hint=None):
+    """Add events from one message-ish Cursor dict (bubble, blob, transcript line)."""
+    if not isinstance(obj, dict):
+        return
+    ts = _any_ts_to_local(obj.get("createdAt") or obj.get("updatedAt")
+                          or obj.get("timestamp") or obj.get("time") or ts_hint)
+    text = _cursor_text(obj.get("text") or obj.get("message"))
+    role = _cursor_role(obj, role_hint)
+    if text and role:
+        sess.add_text(ts, role, text)
+    tfd = obj.get("toolFormerData") or obj.get("tool")
+    if isinstance(tfd, (dict, list)):
+        for item in (tfd if isinstance(tfd, list) else [tfd]):
+            _cursor_tool_event(sess, ts, item)
+
+
+def _sanitized_repo(repo: Path) -> str:
+    return re.sub(r"[^A-Za-z0-9]", "-", str(repo))
+
+
+# -- layer 1: transcript JSONL -------------------------------------------------
+
+def _scan_cursor_transcripts(repo: Path, seen):
+    sessions = []
+    root = HOME / ".cursor" / "projects"
+    if not root.is_dir():
+        return sessions
+    marker = str(repo)
+    want_dir = _sanitized_repo(repo)
+    for proj in root.iterdir():
+        if not proj.is_dir() or proj.name == "agent-transcripts":
+            continue
+        at = proj / "agent-transcripts"
+        if not at.is_dir():
+            continue
+        dir_match = proj.name == want_dir
+        for jf in sorted(at.glob("**/*.jsonl")):
+            sid = jf.stem
+            if sid in seen:
+                continue
+            if not dir_match:
+                head = "".join(json.dumps(o)[:_MAX_CELL] for o in _read_jsonl_head(jf, 30))
+                if marker not in head:
+                    continue
+            sess = Session("cursor", sid, jf, str(repo), repo)
+            sess.add_note(None, "source: agent transcript")
+            for obj in _iter_jsonl(jf):
+                _add_cursor_blob(sess, obj)
+            if sess.events:
+                seen.add(sid)
+                sessions.append(sess)
+    return sessions
+
+
+# -- layer 2: per-chat store.db ------------------------------------------------
+
+def _scan_cursor_store_dbs(repo: Path, seen):
+    sessions = []
+    root = HOME / ".cursor" / "chats"
+    if not root.is_dir():
+        return sessions
+    marker = str(repo)
+    for db in sorted(root.glob("*/*/store.db")):
+        sid = db.parent.name
+        if sid in seen:
+            continue
+        try:
+            con = _sqlite_ro(db)
+            tables = {r[0] for r in con.execute(
+                "SELECT name FROM sqlite_master WHERE type='table'")}
+            meta = {}
+            matched = False
+            sess = None
+            if "meta" in tables:
+                for row in con.execute("SELECT * FROM meta").fetchmany(20):
+                    for cell in row:
+                        obj, raw = _json_maybe(cell)
+                        if isinstance(obj, dict):
+                            meta.update(obj)
+                            if not sess and obj.get("agentId"):
+                                sess = Session("cursor", str(obj["agentId"]), db, str(repo), repo)
+                                sess.title = obj.get("name")
+                                if obj.get("lastUsedModel"):
+                                    sess.models.append(str(obj["lastUsedModel"]))
+                                sess.add_note(_any_ts_to_local(meta.get("createdAt")),
+                                              f"source: store.db (mode: {obj.get('mode', '?')})")
+            if "blobs" in tables:
+                if sess is None:
+                    sess = Session("cursor", sid, db, str(repo), repo)
+                for row in con.execute("SELECT * FROM blobs").fetchmany(_MAX_ROWS):
+                    for cell in row:
+                        if isinstance(cell, (bytes, bytearray)):
+                            cell = cell.decode("utf-8", "replace")
+                        if isinstance(cell, str):
+                            if not matched and marker in cell[:_MAX_CELL]:
+                                matched = True
+                            obj, _raw = _json_maybe(cell[:_MAX_CELL])
+                            _add_cursor_blob(sess, obj)
+            con.close()
+            if sess and sess.events and matched:
+                seen.add(sid)
+                if sess.sid != sid:
+                    seen.add(sess.sid)
+                sessions.append(sess)
+        except Exception:
+            continue
+    return sessions
+
+
+# -- layer 3: cursorDiskKV (global + workspace state.vscdb) --------------------
+
+def _scan_cursor_kv_db(db: Path, repo: Path, seen):
+    sessions = []
+    marker = str(repo)
+    try:
+        con = _sqlite_ro(db)
+        tables = {r[0] for r in con.execute(
+            "SELECT name FROM sqlite_master WHERE type='table'")}
+        if "cursorDiskKV" not in tables:
+            con.close()
+            return sessions
+        composers = []  # (sid, data_dict, repo_matched)
+        for key, value in con.execute(
+                "SELECT key, value FROM cursorDiskKV WHERE key LIKE 'composerData:%'"
+        ).fetchmany(_MAX_ROWS):
+            obj, raw = _json_maybe(value)
+            sid = key.split(":", 1)[1]
+            if sid in seen or not isinstance(obj, dict):
+                continue
+            hit = marker in (raw or "")[:_MAX_CELL * 5]
+            for k in ("cwd", "projectPath", "workspacePath"):
+                if str(obj.get(k, "")) == marker:
+                    hit = True
+            composers.append((sid, obj, hit))
+        if not composers:
+            con.close()
+            return sessions
+        # One streaming pass over bubbles: keeps them for every candidate and
+        # flags a session as matching this repo when any bubble mentions the
+        # repo path (tool commands, referenced files — per the vibe-replay
+        # storage map, composer rows themselves rarely carry a workspace).
+        wanted = {sid for sid, _d, _m in composers}
+        bubbles = defaultdict(list)  # sid -> [(bubble_id, obj)]
+        matched_by_bubble = set()
+        for key, value in con.execute(
+                "SELECT key, value FROM cursorDiskKV WHERE key LIKE 'bubbleId:%'"
+        ).fetchmany(_MAX_ROWS * 20):
+            parts = key.split(":")
+            if len(parts) != 3 or parts[1] not in wanted:
+                continue
+            obj, raw = _json_maybe(value)
+            if not isinstance(obj, dict):
+                continue
+            if len(bubbles[parts[1]]) < 400:
+                bubbles[parts[1]].append((parts[2], obj))
+            if parts[1] not in matched_by_bubble and marker in (raw or "")[:_MAX_CELL]:
+                matched_by_bubble.add(parts[1])
+        con.close()
+        for sid, data, hit in composers:
+            if not (hit or sid in matched_by_bubble):
+                continue
+            sess = Session("cursor", sid, db, str(repo), repo)
+            sess.title = data.get("name")
+            ts = _any_ts_to_local(data.get("createdAt"))
+            sess.add_note(ts, "source: state.vscdb composerData")
+            headers = data.get("fullConversationHeadersOnly")
+            if isinstance(headers, list) and headers:
+                by_id = {bid: obj for bid, obj in bubbles.get(sid, [])}
+                for h in headers:
+                    if not isinstance(h, dict):
+                        continue
+                    bid = h.get("bubbleId")
+                    obj = by_id.get(bid)
+                    if obj is None:
+                        continue
+                    _add_cursor_blob(sess, obj, role_hint=h.get("type"), ts_hint=ts)
+            else:
+                for _bid, obj in bubbles.get(sid, []):
+                    _add_cursor_blob(sess, obj, ts_hint=ts)
+            if sess.events:
+                seen.add(sid)
+                sessions.append(sess)
+    except Exception:
+        pass
+    return sessions
 
 
 def scan_cursor(repo: Path):
-    """Detect Cursor chats for this workspace. Reads only metadata (chat names,
-    timestamps) from sqlite — message bodies are not parsed."""
-    import sqlite3  # stdlib, imported lazily
-
-    sessions = []
-    for root in _cursor_workspace_roots():
+    sessions, seen = [], set()
+    sessions += _scan_cursor_transcripts(repo, seen)
+    sessions += _scan_cursor_store_dbs(repo, seen)
+    for db in CURSOR_GLOBAL_DBS:
+        if db.is_file():
+            sessions += _scan_cursor_kv_db(db, repo, seen)
+    for root in CURSOR_WS_ROOTS:  # legacy: composer rows in per-workspace DBs
+        if not root.is_dir():
+            continue
         for wsdir in root.iterdir():
-            if not wsdir.is_dir():
-                continue
             wj = wsdir / "workspace.json"
-            if not wj.is_file():
+            db = wsdir / "state.vscdb"
+            if not (wj.is_file() and db.is_file()):
                 continue
             try:
                 folder = json.loads(wj.read_text(encoding="utf-8", errors="replace")).get("folder", "")
             except ValueError:
                 continue
-            if _norm_path(folder.replace("file://", "")) != repo:
-                continue
-            db = wsdir / "state.vscdb"
-            if not db.is_file():
-                continue
-            try:
-                con = sqlite3.connect(f"file:{db}?mode=ro", uri=True)
-                cur = con.cursor()
-                rows = cur.execute(
-                    "SELECT value FROM cursorDiskKV WHERE key LIKE 'composerData:%'"
-                ).fetchall()
-                found = 0
-                for (value,) in rows:
-                    try:
-                        data = json.loads(value)
-                    except (ValueError, TypeError):
-                        continue
-                    ts = _epoch_ms_to_local(data.get("createdAt"))
-                    if ts is None:
-                        continue
-                    s = Session("cursor", str(data.get("composerId", "?")), db, str(repo), repo)
-                    s.title = data.get("name") or "(untitled chat)"
-                    s.add_note(ts, f"Cursor chat: {s.title}")
-                    sessions.append(s)
-                    found += 1
-                if not found:
-                    n = cur.execute("SELECT COUNT(*) FROM ItemTable").fetchone()[0]
-                    s = Session("cursor", wsdir.name, db, str(repo), repo)
-                    s.add_note(None, f"Cursor workspace detected (state.vscdb, {n} keys) — chat format not parsed")
-                    sessions.append(s)
-                con.close()
-            except sqlite3.Error:
-                s = Session("cursor", wsdir.name, db, str(repo), repo)
-                s.add_note(None, "Cursor workspace detected but state.vscdb unreadable")
-                sessions.append(s)
+            if _norm_path(folder.replace("file://", "")) == repo:
+                sessions += _scan_cursor_kv_db(db, repo, seen)
     return sessions
 
 
