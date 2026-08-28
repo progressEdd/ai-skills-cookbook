@@ -241,3 +241,4 @@ Every exercise above sits right next to the concept that taught it. If all boxes
 ## Further reading
 - [Intro to git](https://github.com/progressEdd/dev-onboarding) (dev-onboarding guide, with screenshots)
 - [Pro Git book](https://git-scm.com/book/en/v2)
+- [freeCodeCamp Git Cheat Sheet – Helpful Git Commands with Examples](https://www.freecodecamp.org/news/git-cheat-sheet-helpful-git-commands-with-examples/)
