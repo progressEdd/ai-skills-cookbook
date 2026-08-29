@@ -7,7 +7,7 @@
 - [ ] Adapt an existing skill to your own development practices
 - [ ] Know when something deserves to be a skill vs. AGENTS.md vs. a one-off prompt
 
-Every exercise sits right after the concept that teaches it — run each one as you read, and by the end of this lesson every box will be checked.
+Each concept below ends with a **Your turn** — run it before moving on, and by the time you reach the end of this lesson every box will be checked.
 
 Do your skill work inside your `course-$your-name` worktree — you brought `.agents/skills/` into it with the merge and rebase in [the git crash course](01-git-crash-course.md). Skills are read per checkout, so an agent launched there sees your skills while the main checkout stays untouched.
 
@@ -34,7 +34,7 @@ Do your skill work inside your `course-$your-name` worktree — you brought `.ag
 - [ ] Write a small skill for something you've prompted more than twice this week
 
 ## Checkpoint
-If every box above is checked, this lesson is complete. Commit your progress:
+Every exercise above sits right next to the concept that taught it — if all boxes are checked, you're ready for [07-prompting-frameworks.md](07-prompting-frameworks.md). Commit your progress:
 ```
 git add -A
 git commit -m "06 customizing skills complete"

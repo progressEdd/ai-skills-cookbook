@@ -29,10 +29,11 @@ This analogy runs through the whole course — by the end, skills will be your r
 ### Model provider vs. harness
 Continuing the cooking analogy: your Line Chef trained at a cooking school before joining your kitchen. The model provider (GLM, GPT, Claude, etc.) is that school — and different schools prioritize different teaching methods, which is why chefs from different providers have different strengths.
 
-Now assume you're a generous employer who covers your Line Chefs' transportation costs. There are two ways to do it:
+Now assume you're a generous employer who covers your Line Chefs' transportation costs. There are three ways to do it:
 
 - **A monthly bus pass** — a subscription plan such as OpenCode Go, Cursor, or the GLM Coding Plan. The price is fixed, but your chefs ride the shared bus: you're at the mercy of the schedule (rate limits and queues) and the routes it runs (the models the plan offers), and they might talk shop with the bus driver (shared, noisy capacity).
 - **Paying for gas** — an API key from OpenRouter, Anthropic, OpenAI, or Azure Foundry. Your chefs drive their own car: any route, any time (any model, on demand) — but you pay per mile, and the bill spikes when they speed home with the temperature cranked to the max.
+- **Operating your own shuttle** — a local LLM, run with tools like LM Studio, llama.cpp, or VLLM. You pick up your chefs yourself: no fares and no schedule (no per-token cost, works offline), and they never leave your property (full privacy — nothing sent to anyone else's servers). But you buy and maintain the shuttle yourself (upfront hardware cost and setup), and it only seats as many chefs as your garage fits (model size is limited by your GPU's memory).
 
 **Your turn**
 - [ ] In one sentence each, say what the provider and the harness contribute — if you can't yet, re-read before installing anything
@@ -126,7 +127,7 @@ The whole cast in one place, plus the analogies that pay off in later lessons:
 | Sous Chef | Your team — tastes every dish, keeps quality up | This lesson |
 | Head Chef | You — decides whether the dish goes out to customers | This lesson |
 | Cooking school | The model provider — trains your Line Chef | This lesson |
-| Bus pass vs. gas money | Subscription plan vs. API key | This lesson |
+| Bus pass, gas money, or your own shuttle | Subscription plan, API key, or local LLM | This lesson |
 | Dated prep containers | Git commits — pull the last good batch back out | [01](01-git-crash-course.md) |
 | Order chits | `@` references and `/` commands | [02](02-navigating-the-harness.md) |
 | House rules on the wall | AGENTS.md and the `.agents/` recipe binder | [03](03-project-instructions.md) |

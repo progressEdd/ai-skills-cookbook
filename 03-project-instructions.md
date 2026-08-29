@@ -7,7 +7,7 @@
 - [ ] Describe what belongs in project instructions vs. what belongs in a prompt
 - [ ] Use the `.agents/` folder pattern for harness-agnostic assets (skills, scripts, adapters)
 
-Every exercise sits right after the concept that teaches it — run each one as you read, and by the end of this lesson every box will be checked.
+Each concept below ends with a **Your turn** — run it before moving on, and by the time you reach the end of this lesson every box will be checked.
 
 ## Concepts
 
@@ -32,7 +32,7 @@ Every exercise sits right after the concept that teaches it — run each one as 
 - [ ] Explore this repo's `.agents/` folder — find where the `codebase-onboarding` skill lives and note how the same assets serve different harnesses
 
 ## Checkpoint
-If every box above is checked, this lesson is complete. Commit your progress:
+Every exercise above sits right next to the concept that taught it — if all boxes are checked, you're ready for [04-web-search.md](04-web-search.md). Commit your progress:
 ```
 git add -A
 git commit -m "03 project instructions complete"

@@ -6,7 +6,7 @@
 - [ ] Compare at least two frameworks and articulate what each optimizes for
 - [ ] Adapt a framework's pattern into your own reusable prompt or skill
 
-Every exercise sits right after the concept that teaches it — run each one as you read, and by the end of this lesson every box will be checked.
+Each concept below ends with a **Your turn** — run it before moving on, and by the time you reach the end of this lesson every box will be checked.
 
 ## Concepts
 
@@ -31,7 +31,7 @@ Every exercise sits right after the concept that teaches it — run each one as 
 - [ ] Take one pattern and adapt it into a prompt you'll actually use
 
 ## Checkpoint
-If every box above is checked, this lesson is complete. Commit your progress:
+Every exercise above sits right next to the concept that taught it — if all boxes are checked, you're ready for [08-choose-your-workflow.md](08-choose-your-workflow.md). Commit your progress:
 ```
 git add -A
 git commit -m "07 prompting frameworks complete"

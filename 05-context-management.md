@@ -7,7 +7,7 @@
 - [ ] Keep noise out of context (ignore rules, tight prompts, not dumping logs)
 - [ ] Recognize when a session has gone stale and starting fresh beats salvaging
 
-Every exercise sits right after the concept that teaches it — run each one as you read, and by the end of this lesson every box will be checked.
+Each concept below ends with a **Your turn** — run it before moving on, and by the time you reach the end of this lesson every box will be checked.
 
 ## Concepts
 
@@ -32,7 +32,7 @@ Every exercise sits right after the concept that teaches it — run each one as 
 - [ ] Notice a degrading session, start fresh with a concise summary of where you left off, and compare the results
 
 ## Checkpoint
-If every box above is checked, this lesson is complete. Commit your progress:
+Every exercise above sits right next to the concept that taught it — if all boxes are checked, you're ready for [06-customizing-skills.md](06-customizing-skills.md). Commit your progress:
 ```
 git add -A
 git commit -m "05 context management complete"

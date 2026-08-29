@@ -7,7 +7,7 @@
 - [ ] Choose and justify a workflow for a project of your own
 - [ ] Demonstrate deliberate context management throughout: `@` a single file vs. letting the agent explore a whole folder
 
-Every exercise sits right after the concept that teaches it — run each one as you read, and by the end of this lesson every box will be checked.
+Each concept below ends with a **Your turn** — run it before moving on, and by the time you reach the end of this lesson every box will be checked.
 
 ## Concepts
 
@@ -38,7 +38,7 @@ Every exercise sits right after the concept that teaches it — run each one as 
 - [ ] Scaffold a small project using your chosen workflow
 
 ## Checkpoint
-If every box above is checked, this lesson — and the course — is complete. Commit your progress:
+Every exercise above sits right next to the concept that taught it — if all boxes are checked, this lesson — and the course — is complete. Commit your progress:
 ```
 git add -A
 git commit -m "08 choose your workflow complete"

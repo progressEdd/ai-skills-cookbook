@@ -9,16 +9,16 @@
 - [ ] Bring in a teammate's branch with `git merge`, stack your work with `git rebase`, and resolve the conflicts both can raise
 - [ ] Describe what a worktree is and when parallel agent sessions want one
 
-Each concept has a exercise that allows you to follow along — run each command as you read, and you'll be working inside your own `course-$your-name` worktree — replace `$your-name` with your name, so if your name is Edd yours is `course-edd`. If this is your first time learning git, I recommend typing the commands into the terminal manually, as the act of typing will help you process and remember the content better. If you are already familiar, you can instruct your AI agent to create worktrees and branches instead.
+This lesson is hands-on: each concept ends with a **Your turn** — type the commands as you read, and by the end every box will be checked. You'll work inside your own `course-$your-name` worktree — replace `$your-name` with your name, so if your name is Edd, your branch name is `course-edd`. If this is your first time learning git, type the commands into the terminal manually — the act of typing helps you process and remember the content better. If you're already familiar, you can instruct your AI agent to create worktrees and branches instead.
 
 ## Concepts
+
+> **Back to the kitchen:** git is your kitchen's discipline of labeling and date-stamping every prep container. A commit is one dated container in the fridge, a branch is a separate prep station, and a worktree is an extra prep table sharing the same pantry. When a batch goes bad, you don't guess what changed — you pull the last good container back out.
 
 ### Why git matters more with agents
 Git is a version control system: it tracks every change to your files, keeps a full history, and lets you return to any earlier state. Sites like [GitHub](https://github.com/) and [GitLab](https://about.gitlab.com/) host git repositories and add collaboration on top.
 
 As you co-develop with your agent, you need a tool that tracks your changes. If you aren't tracking your changes, you won't be able to revert to a past working state if you or your agent break a feature. Currently, git is the best way to track changes and is used by many open source projects such as the linux kernel and this training.
-
-**Back to the kitchen:** git is your kitchen's discipline of labeling and date-stamping every prep container. A commit is one dated container in the fridge, a branch is a separate prep station, and a worktree is an extra prep table sharing the same pantry. When a batch goes bad, you don't guess what changed — you pull the last good container back out.
 
 ### The common workflow
 Before running any of this, [install git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git).
@@ -215,7 +215,7 @@ One golden rule: **rebase only branches that are yours.** Replaying commits rewr
 - [ ] Rebase `course-$your-name` onto `$my-branch`, resolve the README conflict keeping the course version, then verify with `head -2 README.md`, `ls .agents/skills/`, and a linear `git log --oneline`
 
 ## Checkpoint
-Every exercise above sits right next to the concept that taught it. If all boxes are checked, this lesson is complete: you ran the whole workflow (`status` → `add` → `commit` → `push` → `pull`), undid a bad change, practiced worktrees, merged a teammate's branch while dropping the parts you didn't want, rebased your course work onto your branch of `master`, and you're now working inside `course-$your-name` with the skill kit in place. From here on, mark each lesson's checkboxes and commit as you go.
+Every exercise above sits right next to the concept that taught it — if all boxes are checked, this lesson is complete: you ran the whole workflow (`status` → `add` → `commit` → `push` → `pull`), undid a bad change, practiced worktrees, merged a teammate's branch while dropping the parts you didn't want, rebased your course work onto your branch of `master`, and you're now working inside `course-$your-name` with the skill kit in place. From here on, mark each lesson's checkboxes and commit as you go. Next up: [02-navigating-the-harness.md](02-navigating-the-harness.md).
 
 ## Terminology
 - `clone`: download a repository
