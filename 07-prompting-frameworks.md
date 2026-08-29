@@ -10,6 +10,8 @@ Every exercise sits right after the concept that teaches it — run each one as 
 
 ## Concepts
 
+> **Back to the kitchen:** study other restaurants' cookbooks — steal the technique (knife skills, sauces), not the whole menu.
+
 ### Anatomy of a prompting framework
 <!-- TODO: common structure across frameworks — context, role, task, constraints, output format; examples from the harnesses folder -->
 

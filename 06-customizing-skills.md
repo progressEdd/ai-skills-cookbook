@@ -13,6 +13,8 @@ Do your skill work inside your `course-$your-name` worktree — you brought `.ag
 
 ## Concepts
 
+> **Back to the kitchen:** skills are recipes — a SKILL.md is a recipe card, with what it's for on the front and the detailed steps inside. The scripts that support a skill are utensils: the mandoline that makes the recipe repeatable. Adapting someone else's skill is seasoning their recipe to your taste.
+
 ### What is a skill?
 <!-- TODO: SKILL.md structure, progressive disclosure, when skills load; vs. slash commands -->
 

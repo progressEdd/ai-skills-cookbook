@@ -18,6 +18,8 @@ Git is a version control system: it tracks every change to your files, keeps a f
 
 As you co-develop with your agent, you need a tool that tracks your changes. If you aren't tracking your changes, you won't be able to revert to a past working state if you or your agent break a feature. Currently, git is the best way to track changes and is used by many open source projects such as the linux kernel and this training.
 
+**Back to the kitchen:** git is your kitchen's discipline of labeling and date-stamping every prep container. A commit is one dated container in the fridge, a branch is a separate prep station, and a worktree is an extra prep table sharing the same pantry. When a batch goes bad, you don't guess what changed — you pull the last good container back out.
+
 ### The common workflow
 Before running any of this, [install git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git).
 
@@ -85,7 +87,7 @@ The `<path>` can be a single folder or several at once — `cd 02-worktrees` mov
 
     **Your turn**
     - [ ] Push your branch with `git push origin $my-branch`, replace `$my-branch` with the branch you initialized in the previous steps then find it on GitHub — your commits now live on the remote too
-6. **Open a pull request** — after pushing, GitHub/GitLab will prompt you with a link (or use the *Pull requests* tab → *Compare & pull request*). Some organizations require a review before merge
+6. **Open a pull request** — after pushing, GitHub/GitLab will prompt you with a link (or use the *Pull requests* tab → *Compare & pull request*). Some organizations require a review before merge — that's the Sous Chef tasting the dish before it leaves your kitchen
 
     **Your turn**
     - [ ] Open the pull-request link GitHub shows for your branch and read the diff it presents — you don't have to merge anything, just see how a review reads

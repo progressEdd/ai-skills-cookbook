@@ -11,6 +11,8 @@ Every exercise sits right after the concept that teaches it — run each one as 
 
 ## Concepts
 
+> **Back to the kitchen:** the capstone is choosing your restaurant concept — a food truck (minimal, composable skills), a tasting-menu fine-dining room (spec-driven), or a full brigade de cuisine (a phase loop). Pick the concept that matches the size of your kitchen.
+
 ### The harness landscape
 <!-- TODO: map each repo to its philosophy —
 - skills (Matt Pocock): minimal, composable, you own the process

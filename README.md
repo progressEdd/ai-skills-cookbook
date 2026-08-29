@@ -1,6 +1,8 @@
 # ai-skills-cookbook: Course
 Teaching you how to leverage AI coding agents effectively — by building your own tools.
 
+A kitchen analogy runs through the whole course: your harness is the kitchen, the coding agent is your Line Chef, and you are the Head Chef. It's introduced — and summarized in a table — in [00-start-here.md](00-start-here.md).
+
 ## Getting started
 Before lesson one, install the two tools this course assumes:
 
@@ -27,7 +29,7 @@ The preferred harness is **pi** — minimal, very customizable, and self-documen
 Full setup walkthrough with exercises: [00-start-here.md](00-start-here.md).
 
 ## Your progress
-After [01-git-crash-course.md](01-git-crash-course.md), do the rest of the course in your own worktree so you can mark checkboxes as you go:
+After [01-git-crash-course.md](01-git-crash-course.md), do the rest of the course in your own worktree so that you can mark checkboxes as you go:
 ```
 git worktree add 02-worktrees/course-$your-name -b course-$your-name origin/course
 ```
@@ -42,6 +44,6 @@ Numbered by suggested order:
 - [03-project-instructions.md](03-project-instructions.md) — AGENTS.md and the `.agents` folder: teaching the agent your conventions
 - [04-web-search.md](04-web-search.md) — Letting the agent pull in current documentation and answers
 - [05-context-management.md](05-context-management.md) — What belongs in the context window, and when to start fresh
-- [06-customizing-skills.md](06-customizing-skills.md) — Leveraging and adapting skills to your own practices
+- [06-customizing-skills.md](06-customizing-skills.md) — Leveraging and customizing skills: skills as recipes, scripts as utensils
 - [07-prompting-frameworks.md](07-prompting-frameworks.md) — Studying examples and adapting prompting frameworks
 - [08-choose-your-workflow.md](08-choose-your-workflow.md) — Capstone: review the workflow harnesses and choose your own flow

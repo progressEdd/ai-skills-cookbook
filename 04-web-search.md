@@ -10,6 +10,8 @@ Every exercise sits right after the concept that teaches it — run each one as 
 
 ## Concepts
 
+> **Back to the kitchen:** your Line Chef's cooking-school textbooks stop at graduation — that's the training cutoff. Web search is calling the supplier for today's prices and fresh stock.
+
 ### When to search
 <!-- TODO: current docs, version-specific APIs, recent library releases, novel error messages; vs. stable knowledge already in training data -->
 

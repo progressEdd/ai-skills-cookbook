@@ -11,6 +11,8 @@ Every exercise sits right after the concept that teaches it — run each one as 
 
 ## Concepts
 
+> **Back to the kitchen:** mise en place. The counter is your context window — only what this dish needs belongs on it. Context rot is a cluttered counter where the fish sauce spills into the dessert prep. A fresh session is wiping the counter down between dishes.
+
 ### The context window
 <!-- TODO: tokens, working memory analogy, how tools show context usage -->
 

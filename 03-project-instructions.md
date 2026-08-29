@@ -11,6 +11,8 @@ Every exercise sits right after the concept that teaches it — run each one as 
 
 ## Concepts
 
+> **Back to the kitchen:** AGENTS.md is the house-rules card laminated on the wall — every chef reads it at the start of the shift, so nobody repeats the rules per order. The `.agents/` folder is the recipe binder every station can reach, whichever kitchen format you run.
+
 ### What is AGENTS.md?
 <!-- TODO: the emerging cross-tool convention; where it lives (repo root, subfolders); when it's loaded -->
 

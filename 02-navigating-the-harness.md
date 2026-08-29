@@ -10,6 +10,8 @@ Every exercise sits right after the concept that teaches it — run each one as 
 
 ## Concepts
 
+> **Back to the kitchen:** `@`-referencing a file is placing one specific ingredient on the counter; letting the agent explore a folder is handing it the pantry keys. `/` commands are standardized order chits — write once, invoke every shift.
+
 <!-- TODO: one section per concept, each immediately followed by a "Your turn" exercise the student runs on the spot -->
 
 ### <!-- concept -->
