@@ -38,7 +38,7 @@ Numbered by suggested order:
 
 - [00-start-here.md](00-start-here.md) — Install git and your AI harness, run your first session
 - [01-git-crash-course.md](01-git-crash-course.md) — Git as the safety net and undo button for agent-driven work
-- [02-navigating-the-chat.md](02-navigating-the-chat.md) — The `@` and `/`: referencing files and invoking commands
+- [02-navigating-the-harness.md](02-navigating-the-harness.md) — The `@` and `/`: referencing files and invoking commands
 - [03-project-instructions.md](03-project-instructions.md) — AGENTS.md and the `.agents` folder: teaching the agent your conventions
 - [04-web-search.md](04-web-search.md) — Letting the agent pull in current documentation and answers
 - [05-context-management.md](05-context-management.md) — What belongs in the context window, and when to start fresh
