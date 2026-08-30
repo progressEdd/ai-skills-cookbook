@@ -19,12 +19,12 @@ When we reference a file, our agent can just read the file instead of looking fo
 
 Your Agent might have an output of
 <blockquote>
-$ ls ~/Documents/development_projects/progressEdd_projects/ai-skills-cookbook/ | grep -i -E "license|copying" ; grep -i -m 5 "license"                                   
- ~/Documents/development_projects/progressEdd_projects/ai-skills-cookbook/README.md 2>/dev/null                                                                           
-                                                                                                                                                                          
- LICENSE                                                                                                                                                                  
-                                                                                                                                                                          
-                                                                                                                                                                          
+$ ls ~/Documents/development_projects/progressEdd_projects/ai-skills-cookbook/ | grep -i -E "license|copying" ; grep -i -m 5 "license"
+null                                                                                                                                                             
+
+ LICENSE
+
+
  Command exited with code 1                                                                                                                                               
 
  Took 0.0s   
@@ -33,16 +33,14 @@ $ ls ~/Documents/development_projects/progressEdd_projects/ai-skills-cookbook/ |
  read ~/Documents/development_projects/progressEdd_projects/ai-skills-cookbook/LICENSE                                                                                    
 
 ---
-This repository is licensed under the GNU General Public License, Version 2 (GPL-2.0), June 1991 — see the LICENSE file in the project root.                             
-                                                                                                                                                                          
- Key points:                                                                                                                                                              
- - Free to use, copy, modify, and redistribute, provided the license and copyright notices are preserved                                                                  
- - Derivative works must also be distributed under GPL-2.0 (copyleft)                                                                                                     
- - No warranty — the software is provided "as is"                                                                                                                         
- - The LICENSE file itself contains the standard "or, at your option, any later version" language only in the template appendix; no specific copyright holder is named in 
-   the file                                                                                                                                                               
-                                                                                                                                                                          
- The full text is in ~/Documents/development_projects/progressEdd_projects/ai-skills-cookbook/LICENSE.  
+ This repo is licensed under the GNU General Public License v2.0 (GPL-2.0), June 1991.                                                                                                          
+                                                                                                                                                                                                
+ There are two copies of the license in the project:                                                                                                                                            
+ - ~/LICENSE — the root license file                                                                                                                                                            
+ - 01-dev-onboarding/LICENSE — a duplicate for the dev-onboarding section                                                                                                                       
+                                                                                                                                                                                                
+ GPL-2.0 is a copyleft license: you're free to use, modify, and distribute the software (including commercially), but any distributed derivatives must also be released under GPL-2.0 with      
+ source code provided. 
 </blockquote>
 
 **Your turn**
@@ -52,23 +50,18 @@ This repository is licensed under the GNU General Public License, Version 2 (GPL
 By default, the `@`, will look for child files within a given directory. Let's compare this to if we `@` the Licnse file in the repo's root.
 1. Start a new session in your project directory
 2. Use the `@` and search for `LICENSE`, pick the root `LICENSE` your first prompt should look like this:
-    - >  tell me what the @LICENSE is
-    - Your agent should have a response of
-      - <blockquote> 
-        read LICENSE   
-        
-        --- 
-        
-        The LICENSE file is the GNU General Public License, Version 2 (GPL-2.0), June 1991.                                                                                      
-                                                                                                                                                                          
-        In short, this means the project is licensed as copyleft free software:                                                                                                                                                                                                                                                                            
-           - Freedom to use, study, modify, and redistribute — anyone can copy, distribute, and change the software                                                                 
-           - Copyleft requirement — derivative works must also be distributed under the GPL-2.0 terms (Section 2b)                                                                  
-           - Source code required — if you distribute binaries, you must provide or offer the corresponding source code (Section 3)                                                 
-           - No warranty — the software is provided "as is" with no warranty, and the authors aren't liable for damages (Sections 11–12)                                            
-           - No later-version clause specified — the license doesn't include the "or any later version" wording, so it's strictly GPL-2.0-only unless stated otherwise elsewhere 
-                    
-        </blockquote>
+    - <blockquote>>
+      The LICENSE file is the GNU General Public License, Version 2 (GPL-2.0), June 1991.
+
+      In short, this means the project is licensed as copyleft free software:
+
+      - Freedom to use, study, modify, and redistribute --- anyone can copy, distribute, and change the software
+      - Copyleft requirement --- derivative works must also be distributed under the GPL-2.0 terms (Section 2b)
+      - Source code required --- if you distribute binaries, you must provide or offer the corresponding source code (Section 3)
+      - No warranty --- the software is provided "as is" with no warranty, and the authors aren't liable for damages (Sections 11--12)
+      - No later-version clause specified --- the license doesn't include the "or any later version" wording, so it's strictly GPL-2.0-only unless stated otherwise elsewhere
+    </blockquote 
+
 
 **Your turn**
 - [ ] Use the `@` in a session and find the repo's root license
@@ -86,12 +79,43 @@ By default, many harnesses will ignore files/directories referenced in the .giti
 ```
 This makes it so that our individual worktree branches don't get committed to our branch. In my case I don't want the `progressEdd` branch to include all the worktrees, because they are tracked individually
 
+### The slash (`/`) command
+The slash command `/` in many harnesses lets you access your settings and skills. A universal command is `/model`, which lets you change your model. As we get to later modules, you'll start using the `/` for skills. For now let's just run `/model` and review the output. In pi, you should see a output that looks like this
+```
+
+Only showing models from configured providers. Use /login to add providers.                                                                                                                     
+
+>
+
+→ glm-5.2 [zai] · default ✓
+  gpt-5.3-codex-spark [openai-codex]
+  gpt-5.4 [openai-codex]
+  gpt-5.4-mini [openai-codex]
+  gpt-5.5 [openai-codex]
+  gpt-5.6-luna [openai-codex]
+  gpt-5.6-sol [openai-codex]
+  gpt-5.6-terra [openai-codex]
+  glm-4.7 [zai]
+  glm-5-turbo [zai]
+  (1/15)
+
+  Model Name: GLM-5.2
+
+  Model catalogs refreshed.
+```
+
+**Your turn**
+- [ ] Use the `/` in a session and find which model is selected, write down your answer below, if it is auto, just replace `$MODEL_NAME` with `auto`
+- [ ] My Model is: `$MODEL_NAME`
+
 ## Checkpoint
 Every exercise above sits right next to the concept that taught it — if all boxes are checked, you're ready for [03-project-instructions.md](03-project-instructions.md). Commit your progress:
 ```
-git add -A
-git commit -m "02 navigating the harness complete"
+  git add -A
+  git commit -m "02 navigating the harness complete"
 ```
 
 ## Further reading
-<!-- TODO -->
+[pi slash commands](https://pi.dev/docs/latest/usage#slash-commands)
+[cursor slash commands](https://cursor.com/docs/cli/reference/slash-commands)
+[claude code commands](https://code.claude.com/docs/en/commands#)
