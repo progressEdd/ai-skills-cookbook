@@ -52,6 +52,18 @@ The `<path>` can be a single folder or several at once — `cd 02-worktrees` mov
     **Your turn**
     - [ ] If you haven't cloned yet: `cd` into the folder where you want the repo to live (e.g. `Documents`), run the command above, then `cd ai-skills-cookbook` into it — if you already cloned by following the root README, check the box and move on
     - [ ] Run `git log --oneline` in this repo and skim the output — every line is a checkpoint someone can return to; that's how you keep track of the changes
+
+    Yours will show different commits, but the shape is the same — one hash, one message, per line:
+    ```
+    e1f952e Document 08/29 progress: kitchen analogy thread, Foam course template, lesson 02 draft
+    c1ea6ed Add Foam course-lesson template with placeholders for objectives, kitchen-analogy concepts, Your turn exercises, and checkpoint
+    8bde866 Document 08/27 progress: log-sessions skill, Cursor parsing, course polish landed
+    ```
+
+    Paste your top three lines below:
+    ```
+    # Paste your git log --oneline here
+    ```
 2. **Check out a branch**
     - `git branch` lists your local branches (`git branch -a` includes remote ones like `course` and `starter-skills`); `git checkout $branch` switches to the `$branch`, which can include `course`, `master`, or `starter-skills`
     - Rather than committing straight to `master`, branch off it — *your branch of `master`*, replace `$my-branch` with your desired name:
@@ -80,6 +92,23 @@ The `<path>` can be a single folder or several at once — `cd 02-worktrees` mov
     **Your turn**
     - [ ] Review your change with `git diff` first — you'll read diffs constantly when reviewing agent edits
     - [ ] Stage the file with `git add $file-name`, confirm with `git status` that it's staged, then commit with a message your future self will understand
+
+    A one-word fix reads like this — removed lines get `-`, added lines get `+`, and the `index` line is git plumbing you can ignore:
+    ```diff
+    diff --git a/README.md b/README.md
+    index 1a2b3c4..5d6e7f8 100644
+    --- a/README.md
+    +++ b/README.md
+    @@ -1,2 +1,2 @@
+     # ai-skills-cookbook
+    -Teaching you how to leverage AI Coding Agents effectively by building your own tool
+    +Teaching you how to leverage AI Coding Agents effectively by building your own tools
+    ```
+
+    Paste your diff below — this is the shape of every agent edit you'll ever review:
+    ```
+    # Paste your git diff here
+    ```
 5. **Push local changes to the remote**
     ```
     git push origin $my-branch
@@ -98,6 +127,7 @@ The `<path>` can be a single folder or several at once — `cd 02-worktrees` mov
 
     **Your turn**
     - [ ] Run `git pull` on your branch — right after a push, "Already up to date." is exactly what you want to see
+    - My `git pull` said: `$OUTPUT`
 
 ### Undoing things
 The undo toolbox, ordered safest first:
@@ -183,7 +213,21 @@ git merge origin/starter-skills
 ```
 (`origin/starter-skills` is your clone's copy of the remote branch. Why spell it that way? Unlike `git checkout`, `git merge` doesn't fall back to a matching remote branch: plain `git merge starter-skills` works only if a local `starter-skills` exists, and a plain clone doesn't create one — `origin/starter-skills` works for everyone. If you ran `git setup-worktrees` during setup, you *do* have a local `starter-skills`, checked out in `02-worktrees/starter-skills`, so plain `git merge starter-skills` works there too, same result. Merging a branch that's checked out in another worktree is fine: git only stops you from *checking out* the same branch twice.)
 
-Git pauses with `CONFLICT (content): Merge conflict in README.md`. Your teammate didn't just add the kit — they also reworded the README tagline, and git won't guess which version you want. That's a **conflict**, and here it's an easy call: their tagline is a change you *don't* want; the skills kit is the change you *do* want:
+Git pauses with output like this:
+```
+Auto-merging README.md
+CONFLICT (content): Merge conflict in README.md
+Automatic merge failed; fix conflicts and then commit the result.
+```
+Your teammate didn't just add the kit — they also reworded the README tagline, and git won't guess which version you want. Instead it marks both sides inside `README.md`:
+```
+<<<<<<< HEAD
+Teaching you how to leverage AI Coding Agents effectively by building your own tools
+=======
+Teaching you how to leverage AI Coding Agents effectively — starter skills included, maintained by the platform team
+>>>>>>> origin/starter-skills
+```
+That's a **conflict**, and here it's an easy call: their tagline is a change you *don't* want; the skills kit is the change you *do* want:
 1. Open `README.md` — between `<<<<<<<` and `=======` is your side; between `=======` and `>>>>>>>` is your teammate's
 2. Edit the file to exactly what it should be: your title and tagline, no markers
 3. `git add README.md`, then `git commit` to finish the merge
@@ -214,6 +258,11 @@ One golden rule: **rebase only branches that are yours.** Replaying commits rewr
 **Your turn**
 - [ ] Merge `origin/starter-skills` into `$my-branch` and resolve the conflict keeping your README — notice how the skills kit arrived riding alongside a change you didn't want
 - [ ] Rebase `course-$your-name` onto `$my-branch`, resolve the README conflict keeping the course version, then verify with `head -2 README.md`, `ls .agents/skills/`, and a linear `git log --oneline`
+
+You'll meet the marker block twice today (once in the merge, once in the rebase) — paste one of yours below so it's recognition instead of panic next time:
+```
+# Paste your conflict markers here
+```
 
 ## Checkpoint
 Every exercise above sits right next to the concept that taught it — if all boxes are checked, this lesson is complete: you ran the whole workflow (`status` → `add` → `commit` → `push` → `pull`), undid a bad change, practiced worktrees, merged a teammate's branch while dropping the parts you didn't want, rebased your course work onto your branch of `master`, and you're now working inside `course-$your-name` with the skill kit in place. From here on, mark each lesson's checkboxes and commit as you go. Next up: [02-navigating-the-harness.md](02-navigating-the-harness.md).
