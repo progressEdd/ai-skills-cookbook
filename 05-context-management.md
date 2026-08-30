@@ -18,6 +18,12 @@ Each concept below ends with a **Your turn** — run it before moving on, and by
 
 **Your turn**
 - [ ] During your next session, find your harness's context-usage indicator and watch it grow as the conversation continues
+- My context indicator lives: `$WHERE`
+
+Once it has grown, record what it reads — paste it below, or save a screenshot under `00-supporting-files/images/context-management/` (screenshots keep the colors and layout a paste loses):
+```
+# Paste your context reading here
+```
 
 ### What goes in, what stays out
 <!-- TODO: single file vs. folder exploration; exclusions (.gitignore-style); summarizing instead of pasting -->

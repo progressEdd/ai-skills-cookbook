@@ -63,6 +63,7 @@ The `<path>` can be a single folder or several at once — `cd 02-worktrees` mov
 
     **Your turn**
     - [ ] Run `git branch -a` to list the branches, then create your own working branch off `master`: `git checkout -b $my-branch master` (replace `$my-branch` with a name you'll recognize)
+    - My branch is: `$my-branch`
 3. **Make modifications** — you, or an agent on your behalf
 
     **Your turn**

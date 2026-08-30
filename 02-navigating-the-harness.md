@@ -105,8 +105,13 @@ Only showing models from configured providers. Use /login to add providers.
 ```
 
 **Your turn**
-- [ ] Use the `/` in a session and find which model is selected, write down your answer below, if it is auto, just replace `$MODEL_NAME` with `auto`
-- [ ] My Model is: `$MODEL_NAME`
+- [ ] Use the `/` in a session and find which model is selected
+- My model is: `$MODEL_NAME` — if it's set to auto, just write `auto`
+
+Paste your `/model` output below — the model list in the example above will date quickly, but your own paste stays accurate for you:
+```
+# Paste your /model output here
+```
 
 ## Checkpoint
 Every exercise above sits right next to the concept that taught it — if all boxes are checked, you're ready for [03-project-instructions.md](03-project-instructions.md). Commit your progress:

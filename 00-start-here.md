@@ -70,6 +70,7 @@ All three harnesses below are used throughout this course. Pick one to start —
 
 **Your turn**
 - [ ] Launch your chosen harness and sign in / connect a provider — it should open without errors
+- My harness is: `$HARNESS` (pi, Cursor, or Claude Code)
 
 ### Run your first session
 Navigate to the repo you cloned from the root README (or any project folder), launch your harness, and ask it something simple:
