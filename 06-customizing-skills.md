@@ -19,13 +19,13 @@ Do your skill work inside your `course-$your-name` worktree — you brought `.ag
 <!-- TODO: SKILL.md structure, progressive disclosure, when skills load; vs. slash commands -->
 
 **Your turn**
-- [ ] Open one `SKILL.md` in `00-supporting-files/harnesses/skills/` and read it end-to-end — note its structure and how it tells the agent to use it
+- [ ] Open one `SKILL.md` in `00-supporting-files/harnesses/mattpocock-skills/` and read it end-to-end — note its structure and how it tells the agent to use it
 
 ### Finding and installing skills
 <!-- TODO: marketplaces, npx skills add, plugin stores; reading a skill before installing it -->
 
 **Your turn**
-- [ ] Browse `00-supporting-files/harnesses/skills/` and pick one skill to adapt to your own workflow
+- [ ] Browse `00-supporting-files/harnesses/mattpocock-skills/` and pick one skill to adapt to your own workflow
 
 ### Making it yours
 <!-- TODO: adapting an existing skill, writing your own, keeping skills small and composable (see Matt Pocock's skills repo) -->
