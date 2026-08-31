@@ -2,8 +2,8 @@
 	path = 01-dev-onboarding
 	url = https://github.com/progressEdd/dev-onboarding.git
 	branch = master
-[submodule "00-supporting-files/harnesses/skills"]
-	path = 00-supporting-files/harnesses/skills
+[submodule "00-supporting-files/harnesses/mattpocock-skills"]
+	path = 00-supporting-files/harnesses/mattpocock-skills
 	url = https://github.com/mattpocock/skills
 [submodule "00-supporting-files/harnesses/gsd-core"]
 	path = 00-supporting-files/harnesses/gsd-core
