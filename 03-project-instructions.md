@@ -14,10 +14,35 @@ Each concept below ends with a **Your turn** — run it before moving on, and by
 > **Back to the kitchen:** AGENTS.md is the house-rules card laminated on the wall — every chef reads it at the start of the shift, so nobody repeats the rules per order. The `.agents/` folder is the recipe binder every station can reach, whichever kitchen format you run.
 
 ### What is AGENTS.md?
-<!-- TODO: the emerging cross-tool convention; where it lives (repo root, subfolders); when it's loaded -->
+The [github page](https://github.com/agentsmd/agents.md) actually has a great explanation, let's read it
+> Think of AGENTS.md as a README for agents: a dedicated, predictable place to provide context and instructions to help AI coding agents work on your project.
+
+You can write your high level rules and conventions for your coding agent to follow. Depending on your harness, it might also be called `HERMES.MD` for Hermes Agent, `CLAUDE.md` for claude code, and `CURSOR.md` for cursor, Edd defined the AGENTS.md for this project to use a shorthand for paths, well as screenshots, worktrees and scripts
+<blockquote>
+# Agent Instructions
+
+1. **Use relative directories** — Always use `~/` instead of absolute paths like `/home/user/...`. This ensures portability across different machines and environments.
+
+2. **Screenshots and images** — When adding screenshots or other images, place them in:
+   ```
+   00-supporting-files/images/${fileBasenameNoExtension}/${datetime|yyyyMMddHHmmss}
+   ```
+   For example, a screenshot from `feature-demo.md` would go in:
+   ```
+   00-supporting-files/images/feature-demo/20260524153000.png
+   ```
+
+3. **Worktrees** — If a `02-worktrees` folder exists in the project root, create git worktrees by default when branching. Follow the conventions described in the `02-worktrees/README.md` for naming, structure, and usage.
+
+4. This repo keeps reusable agent assets in `.agents/` and syncs tool-specific adapters with `.agents/scripts/`.
+
+</blockquote>
+
+As you get more complex rules, you should organize them in the `.agents` or a folder written in `AGENTS.md`. OpenAI realized that splitting out rules to separate files and making `AGENTS.md` a table of contents resulted in less context rot, in their a [blog post](https://openai.com/index/harness-engineering/#we-made-repository-knowledge-the-system-of-record) that chronicles their experiences using a large the `AGENTS.md` file. 
 
 **Your turn**
-- [ ] Read the AGENTS.md at the root of this repo and of one harness in `00-supporting-files/harnesses/` — compare what each chooses to instruct
+- [ ] Read the [`AGENTS.md`](///AGENTS.md) at the root of this repo
+- [ ] Read one of `AGENTS.md` harness in `00-supporting-files/harnesses/` — compare what each chooses to instruct. If you need a specific example, you can look at [matt pocock's `AGENTS.md`](///00-supporting-files/harnesses/mattpocock-skills/AGENTS.md)
 
 ### Writing good instructions
 <!-- TODO: keep it short, imperative, and specific; examples of good vs. bad rules; avoiding instruction bloat -->
@@ -39,4 +64,8 @@ git commit -m "03 project instructions complete"
 ```
 
 ## Further reading
-<!-- TODO: links -->
+[AGENTS.md the standard](https://agents.md/)
+[pi's AGENTS.md](https://github.com/earendil-works/pi/blob/main/AGENTS.md)
+[Codex's AGENTS.md](https://github.com/openai/codex/blob/main/AGENTS.md)
+[OpenAI's Learnings for AGENTS.md](https://openai.com/index/harness-engineering/)
+[Cursor's AGENTS.md Section](https://cursor.com/docs/rules#agentsmd)
